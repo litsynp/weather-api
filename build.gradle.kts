@@ -21,6 +21,9 @@ repositories {
     mavenCentral()
 }
 
+val isMacOS = System.getProperty("os.name").startsWith("Mac OS X")
+val architecture = System.getProperty("os.arch").toLowerCase()
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -29,6 +32,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    if (isMacOS && architecture == "aarch64") {
+        runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64")
+    }
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
 }
