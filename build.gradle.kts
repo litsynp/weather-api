@@ -49,4 +49,8 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    if (System.getProperty("test.profile") != "integration") {
+        exclude("**/infra/*")
+    }
 }
