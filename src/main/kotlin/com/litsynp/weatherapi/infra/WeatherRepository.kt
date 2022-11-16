@@ -1,5 +1,6 @@
 package com.litsynp.weatherapi.infra
 
+import com.litsynp.weatherapi.api.request.VillageForecastRequest
 import com.litsynp.weatherapi.config.WeatherOpenApiProperties
 import com.litsynp.weatherapi.exception.WeatherApiException
 import org.springframework.http.MediaType
@@ -17,25 +18,18 @@ class WeatherOpenApiRepository(
             .apply { encodingMode = DefaultUriBuilderFactory.EncodingMode.NONE })
         .build()
 
-    fun getVillageForecast(
-        numOfRows: Int = 10,
-        page: Int = 1,
-        baseDate: String,
-        baseTime: String,
-        nx: Int,
-        ny: Int,
-    ): Mono<String> {
+    fun getVillageForecast(params: VillageForecastRequest): Mono<String> {
         return webClient.get()
             .uri { uriBuilder ->
                 uriBuilder.path("/getVilageFcst")
                     .queryParam("serviceKey", weatherOpenApiProperties.kma.serviceKeyEncoded)
                     .queryParam("dataType", "JSON")
-                    .queryParam("numOfRows", numOfRows)
-                    .queryParam("pageNo", page)
-                    .queryParam("base_date", baseDate)
-                    .queryParam("base_time", baseTime)
-                    .queryParam("nx", nx)
-                    .queryParam("ny", ny)
+                    .queryParam("numOfRows", params.numOfRows)
+                    .queryParam("pageNo", params.page)
+                    .queryParam("base_date", params.baseDateStr)
+                    .queryParam("base_time", params.baseTimeStr)
+                    .queryParam("nx", params.nx)
+                    .queryParam("ny", params.ny)
                     .build()
             }
             .header("Accept", MediaType.APPLICATION_JSON_VALUE)
